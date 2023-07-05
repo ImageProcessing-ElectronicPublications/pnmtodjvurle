@@ -1,6 +1,8 @@
 # pnmtodjvurle
 
 DjVu Color RLE.
+This utility is for transcoding a low-color mask from PNM ([Netpbm](https://netpbm.sourceforge.net/)) to DjVuRLE.
+This is required by the `csepdjvu` utility.
 
 ## Build
 
@@ -30,5 +32,5 @@ rm foreground.rle foreground.pnm background.ppm output.sep  # for win: del foreg
 
 ## Copyright
 
-Autors: Arcand, manfred.  
+Authors: Arcand, manfred.  
 This is free and unencumbered software released into the public domain.
