@@ -14,7 +14,7 @@ static inline void writeLong(FILE* const file, long const l)
             putc((l >> 16) & 0xff, file) == EOF ||
             putc((l >> 8) & 0xff, file) == EOF ||
             putc(l & 0xff, file) == EOF)
-        ABORT("failed to write to the RLE file");
+        ABORT((char*)"failed to write to the RLE file");
 }
 
 static int getPalIndex(struct rgb color)
@@ -26,7 +26,7 @@ static int getPalIndex(struct rgb color)
             return i;
     palette[palLength++] = color;
     if (palLength >= 0xFF0)
-        ABORT("getPalIndex: too many colors in input file");
+        ABORT((char*)"getPalIndex: too many colors in input file");
     // color index > 0FF0 reserved
     return i;
 }
@@ -37,7 +37,7 @@ static void writeRun(struct rgb color, dword len)
 
     if (len == 0) return;
     if (len >= ((dword)1 << 20))
-        ABORT("writeRun: too long rleLength");
+        ABORT((char*)"writeRun: too long rleLength");
     if (cmpColors(color, transparentColor))
         rleValue = 0xFFF;
     else
@@ -55,12 +55,12 @@ static void processFile(void)
     {
         runLength = 1;
         if (fread(&prev, sizeof(struct rgb), 1, inputfile) !=1)
-            ABORT("EOF / read error reading a one-rgb sample");
+            ABORT((char*)"EOF / read error reading a one-rgb sample");
         // if ret!=1 EoF_error
         for (i = 1; i < pnm_image.width; i++)
         {
             if (fread(&curr, sizeof(struct rgb), 1, inputfile) !=1)
-                ABORT("EOF / read error reading a one-rgb sample");
+                ABORT((char*)"EOF / read error reading a one-rgb sample");
             // if ret!=1 EoF_error
             if (cmpColors(prev, curr))
             {
@@ -102,7 +102,7 @@ void ppmtodjvurle(void)
     {
         if ((lenr = fread(&palette, 1, sizeof(palette), tempfile))==0) break;
         lenw = fwrite(&palette, 1, lenr, outputfile);
-        if (lenr != lenw) ABORT("Merge file error: (disk full?)");
+        if (lenr != lenw) ABORT((char*)"Merge file error: (disk full?)");
     }
     fclose(tempfile);
 }

@@ -10,7 +10,7 @@
 static inline void writebyte(FILE* const file, byte const c)
 {
     if (fputc (c, file) == EOF)
-        ABORT("failed to write to the RLE file");
+        ABORT((char*)"failed to write to the RLE file");
 }
 
 /* Write a run length to the RLE file. */
@@ -49,21 +49,22 @@ static byte pbm_getrawbyte(FILE* const file)
 
     iby = getc(file);
     if (iby == EOF)
-        ABORT("EOF / read error reading a one-byte sample");
+        ABORT((char*)"EOF / read error reading a one-byte sample");
     return (byte) iby;
 }
 
 static void pbm_readpbmrow(FILE* file, byte* bitrow, word cols)
 {
-    register word col, bitshift;
+    register word col, bitshift, bitshiftflag;
     register byte* bP;
     register byte item;
 
     bitshift = -1;
+    bitshiftflag = bitshift;
     item = 0;  /* item's value is meaningless here */
     for ( col = 0, bP = bitrow; col < cols; ++col, ++bP )
     {
-        if ( bitshift == -1 )
+        if ( bitshift == bitshiftflag )
         {
             item = pbm_getrawbyte( file );
             bitshift = 7;
@@ -79,11 +80,11 @@ static byte* pbm_allocrow(word cols)
     void* itrow;
 
     if (UINT_MAX / cols < size)
-        ABORT("Arithmetic overflow multiplying to get the "
+        ABORT((char*)"Arithmetic overflow multiplying to get the "
               "size of a row to allocate.");
     itrow = malloc(cols * size);
     if (itrow == NULL)
-        ABORT("out of memory allocating a row");
+        ABORT((char*)"out of memory allocating a row");
     return (byte*)itrow;
 }
 

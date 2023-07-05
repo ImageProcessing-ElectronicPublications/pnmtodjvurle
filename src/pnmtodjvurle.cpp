@@ -21,7 +21,7 @@ static void skip_blank(void)
     if (ch == '#')
         while((ch = fgetc(inputfile)) != '\n' && ch != '\r');
     if (ch != '\n' && ch != '\r' && ch != ' ' && ch != '\t')
-        ABORT("skip_blank: Invalid pnm header");
+        ABORT((char*)"skip_blank: Invalid pnm header");
     do
         ch = fgetc(inputfile);
     while (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r');
@@ -42,11 +42,11 @@ static int readInt(void)
         ch = fgetc(inputfile);
     }
     if (ch < '0' || ch > '9')
-        ABORT("readInt: Invalid pnm header");
+        ABORT((char*)"readInt: Invalid pnm header");
     do
     {
         if (num > MAXINT/10-10)
-            ABORT("readInt: Invalid pnm header");
+            ABORT((char*)"readInt: Invalid pnm header");
         num = num*10 + (ch-'0');
         ch = fgetc(inputfile);
     }
@@ -59,7 +59,7 @@ static void read_pnmHeader(void)
 {
 
     if (fgetc(inputfile)!='P')
-        ABORT("Invalid pnm header: signature P4, P5 or P6 expected");
+        ABORT((char*)"Invalid pnm header: signature P4, P5 or P6 expected");
 
     switch ( PNM=fgetc(inputfile) )
     {
@@ -70,7 +70,7 @@ static void read_pnmHeader(void)
     case '6':
         break;
     default:
-        ABORT("Invalid pnm header: signature P4, P5 or P6 expected");
+        ABORT((char*)"Invalid pnm header: signature P4, P5 or P6 expected");
     };
     skip_blank();
     pnm_image.width = readInt();
@@ -80,7 +80,7 @@ static void read_pnmHeader(void)
     {
         skip_blank();
         if( readInt() != 255)
-            ABORT("Invalid pnm header: invalid maxColor");
+            ABORT((char*)"Invalid pnm header: invalid maxColor");
     }
     fgetc(inputfile);
 }
@@ -89,6 +89,10 @@ int main(int argc, char *argv[])
 {
     inputfile  = (argc > 1) ? fopen(argv[1], "rb") : stdin;
     outputfile = (argc > 2) ? fopen(argv[2], "wb") : stdout;
+    if (!inputfile)
+        ABORT((char*)"Invalid input file.");
+    if (!outputfile)
+        ABORT((char*)"Invalid output file.");
     read_pnmHeader();
     switch (PNM)
     {
@@ -102,6 +106,8 @@ int main(int argc, char *argv[])
         ppmtodjvurle();
         break;
     };
-    if (argc > 1) fclose(inputfile);
-    if (argc > 2) fclose(outputfile);
+    if (argc > 1)
+        fclose(inputfile);
+    if (argc > 2)
+        fclose(outputfile);
 }

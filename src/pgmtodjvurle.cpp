@@ -14,7 +14,7 @@ static inline void writeLong(FILE* const file, long const l)
             putc((l >> 16) & 0xff, file) == EOF ||
             putc((l >> 8) & 0xff, file) == EOF ||
             putc(l & 0xff, file) == EOF)
-        ABORT("failed to write to the RLE file");
+        ABORT((char*)"failed to write to the RLE file");
 }
 
 static int getPalIndex(gray color)
@@ -36,7 +36,7 @@ static void writeRun(gray color, dword len)
 
     if (len == 0) return;
     if (len >= ((dword)1 << 20))
-        ABORT("writeRun: too long rleLength");
+        ABORT((char*)"writeRun: too long rleLength");
     if (cmpColors(color, transparentColor))
         rleValue = 0xFFF;
     else
@@ -54,12 +54,12 @@ static void processFile(void)
     {
         runLength = 1;
         if (fread(&prev, sizeof(gray), 1, inputfile) !=1)
-            ABORT("EOF / read error reading a one-gray sample");
+            ABORT((char*)"EOF / read error reading a one-gray sample");
         // if ret!=1 EoF_error
         for (i = 1; i < pnm_image.width; i++)
         {
             if (fread(&curr, sizeof(gray), 1, inputfile) !=1)
-                ABORT("EOF / read error reading a one-gray sample");
+                ABORT((char*)"EOF / read error reading a one-gray sample");
             // if ret!=1 EoF_error
             if (cmpColors(prev, curr))
             {
@@ -101,7 +101,7 @@ void pgmtodjvurle(void)
     {
         if ((lenr = fread(&palette, 1, sizeof(palette), tempfile))==0) break;
         lenw = fwrite(&palette, 1, lenr, outputfile);
-        if (lenr != lenw) ABORT("Merge file error: (disk full?)");
+        if (lenr != lenw) ABORT((char*)"Merge file error: (disk full?)");
     }
     fclose(tempfile);
 }
