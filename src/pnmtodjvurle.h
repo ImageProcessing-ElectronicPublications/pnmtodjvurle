@@ -3,7 +3,14 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
+#ifndef PNMTODJVURLE_H
+#define PNMTODJVURLE_H
+
 #define MAXINT 32767
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef unsigned int word;
 typedef unsigned long dword;
@@ -32,3 +39,8 @@ extern void pbmtodjvurle(void);
 extern void pgmtodjvurle(void);
 extern void ppmtodjvurle(void);
 
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* _cplusplus */
+
+#endif /* PNMTODJVURLE_H */
